@@ -1,0 +1,56 @@
+.box {
+  width: 1200px;
+  height: 900px;
+  font-weight: bold;
+  font-size: 1.8em;
+}
+.box .title {
+  position: relative;
+  background-color: rgba(0,0,0,0.5);
+  margin: 0;
+  height: 50px;
+  top :96px;
+  color:white;
+}
+.box.image {
+  height: 80%;
+  padding-top: 10px;
+  display: flex;
+  flex-direction:row;
+  align-items: center;
+}
+.box.image img{
+  width: 50%;
+  height: 90%;
+}
+
+.description{
+  position: relative;
+  display: flex;
+  bottom: 200px;
+}
+
+.description p {
+  color: white;
+  text-shadow: 3px 3px 2px black;
+  width: 50%;
+}
+
+.box.image.final{
+  height: 80%;
+  padding-top: 10px;
+  display: flex;
+  flex-direction:row;
+  align-items: center;
+  justify-content: center;
+}
+
+.description.final{
+  position: relative;
+  display: flex;
+  bottom: 200px;
+  color: white;
+  text-shadow: 4px 4px 2px black;
+  display: flex;
+  justify-content: center;
+}
