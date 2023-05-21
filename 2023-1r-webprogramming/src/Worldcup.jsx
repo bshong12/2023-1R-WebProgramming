@@ -36,14 +36,24 @@ function worldcup() {
     {name:'파워에이드', src:p15},
     {name:'피크닉', src:p16},
   ];
+  const initialStat = candidate.reduce((acc, item) => {
+    acc[item.name] = 0;
+    return acc;
+  }, {});
 
   const [game, setGame] = useState([]); 
   const [round, setRound] = useState(0);
   const [nextGame, setNextGame] = useState([]);
   const [selectedImage1, setSelectedImage1] = useState(false);
   const [selectedImage2, setSelectedImage2] = useState(false);
+  const [stat, setStat] =useState(initialStat);
 
   useEffect(() => {
+    const 문자열 = localStorage.getItem("2018111818");
+      if(문자열 != null) {
+        setStat(JSON.parse(문자열));
+      }
+
     setGame(candidate.map(c => {
       return {name: c.name, src : c.src, order:Math.random()}
     }).sort((l,r) => {
@@ -84,36 +94,58 @@ function worldcup() {
   }, [selectedImage2]);
 
   if(game.length === 1) {
+    localStorage.setItem("2018111818", JSON.stringify(stat));
     return <div className='box'>
       <p className='title'>이상형 월드컵 우승</p>
       <div className='box image final'>
         <img src={game[0].src}/> 
       </div>
       <div className='description final'>
-        <p>{game[0].name}</p>
+        <p>{game[0].name}</p> 
       </div>
+      <div>{game[0].name}: {stat[game[0].name]}번 승리</div>
+      <table>
+        <tbody>
+          <tr><td>음료수 이름</td><td>승리횟수</td></tr>
+          {Object.keys(stat).sort((a, b) => stat[b] - stat[a]).map(name => {  // 내림차순
+            return <tr key={name}><td>{name}</td><td>{stat[name]}</td></tr>
+          })}
+        </tbody>
+      </table>
     </div>
   }
 
   if(game.length === 0 || round +1 > game.length /2 ) return <p>로딩중입니다</p>;
+  const left = round*2, right = round*2+1;
+
+  const leftFunction = () => {
+    setSelectedImage1(true)
+    setStat({...stat,
+      [game[left].name]: stat[ game[left].name ]+1 // 값 덮어씀
+    });
+    setTimeout(() =>{
+      setNextGame((prev) => prev.concat(game[left]))
+      setRound(round => round +1);
+    }, 3000)
+  }
+
+  const rightFunction = () => {
+    setSelectedImage2(true)
+    setStat({...stat,
+      [game[right].name]: stat[ game[right].name ]+1 // 값 덮어씀
+    });
+    setTimeout(() =>{
+      setNextGame((prev) => prev.concat(game[right]))
+      setRound(round => round +1);
+    }, 3000)
+  }
+  
   return <div className='box'>
     <p className='title'>음료수 월드컵!! {round +1} /{game.length / 2} <b>{game.length === 2 ? '결승' :game.length+'강'}</b> </p>
     <div className='box image'>
-      <img className='img1' src={game[round *2].src} onClick={() => {
-        setSelectedImage1(true)
-        setTimeout(() =>{
-          setNextGame((prev) => prev.concat(game[round * 2]))
-          setRound(round => round +1);
-        }, 3000)
-      }} />
+      <img className='img1' src={game[left].src} onClick={leftFunction} />
 
-      <img className='img2' src={game[round *2 + 1].src} onClick={() => {
-        setSelectedImage2(true)
-        setTimeout(() =>{
-          setNextGame((prev) => prev.concat(game[round * 2 + 1]))
-          setRound(round => round +1);
-        }, 3000)
-      }}/>
+      <img className='img2' src={game[right].src} onClick={rightFunction}/>
     </div>
     <div className='description'>
       <p>{game[round*2].name}</p>
@@ -123,4 +155,4 @@ function worldcup() {
   </div>
 }
 
-export default worldcup;
+export default worldcup;  
